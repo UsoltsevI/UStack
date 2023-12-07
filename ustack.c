@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include "ustack.h"
@@ -9,7 +8,8 @@ static size_t MIN_USTACK_CAPACITY = 32;
 static size_t NUM_ELEM_TO_OUTPUT = 8;
 
 struct ustack * new_ustack(size_t capacity, const size_t size_elem) {
-    assert(size_elem > 0);
+    if (size_elem == 0)
+        return NULL;
 
     struct ustack *stk = (struct ustack *) calloc(1, sizeof(struct ustack));
 
@@ -36,28 +36,36 @@ struct ustack * new_ustack(size_t capacity, const size_t size_elem) {
 }
 
 size_t ucapacity(const struct ustack *stk) {
-    assert(stk);
+    if (!stk) 
+        return 0;
+
     return stk->capacity;
 }
 
 size_t usize(const struct ustack *stk) {
-    assert(stk);
+    if (!stk)
+        return 0;
+
     return stk->top + 1;
 }
 
 int uis_empty(const struct ustack *stk) {
-    assert(stk);
+    if (!stk)
+        return 0;
+
     return stk->top == -1;
 }
 
 int uis_full(const struct ustack *stk) {
-    assert(stk);
+    if (!stk)
+        return 0;
+
     return (stk->top != -1) && (stk->top >= stk->capacity - 1);
 }
 
 void upush(struct ustack *stk, const void *new_elem) {
-    assert(stk);
-    assert(new_elem);
+    if ((!stk) || (!new_elem))
+        return;
 
     if (uis_full(stk)) {
         stk->capacity = stk->capacity * 2;
@@ -73,17 +81,9 @@ void upush(struct ustack *stk, const void *new_elem) {
     memcpy(stk->data + stk->top * stk->size_elem, new_elem, stk->size_elem);
 }
 
-void upush_wc(struct ustack *stk, const void *new_elem) {
-    assert(stk);
-    assert(new_elem);
-
-    stk->top++;
-    memcpy(stk->data + stk->top * stk->size_elem, new_elem, stk->size_elem);
-}
-
 void upop(struct ustack *stk, void *ret) {
-    assert(ret);
-    assert(stk);
+    if ((!stk) || (!ret))
+        return;
 
     if (uis_empty(stk)) {
         fprintf(stderr, "stk is empty in func <%s>\n", __func__);
@@ -95,18 +95,9 @@ void upop(struct ustack *stk, void *ret) {
     delete_top(stk);
 }
 
-void upop_wc(struct ustack *stk, void *ret) {
-    assert(ret);
-    assert(stk);
-
-    memcpy(ret, stk->data + stk->top * stk->size_elem, stk->size_elem);
-
-    delete_top_wc(stk);
-}
-
 void upeek(const struct ustack *stk, void *ret) {
-    assert(ret);
-    assert(stk);
+    if ((!stk) || (!ret))
+        return;
 
     if (uis_empty(stk)) {
         fprintf(stderr, "stk is empty in func <%s>\n", __func__);
@@ -116,15 +107,9 @@ void upeek(const struct ustack *stk, void *ret) {
     memcpy(ret, stk->data + stk->top * stk->size_elem, stk->size_elem);    
 }
 
-void upeek_wc(const struct ustack *stk, void *ret) {
-    assert(ret);
-    assert(stk);
-
-    memcpy(ret, stk->data + stk->top * stk->size_elem, stk->size_elem);    
-}
-
 void delete_top(struct ustack *stk) {
-    assert(stk);
+    if (!stk)
+        return;
 
     if (uis_empty(stk)) {
         fprintf(stderr, "stk is empty in func <%s>\n", __func__);
@@ -144,16 +129,9 @@ void delete_top(struct ustack *stk) {
     }
 }
 
-void delete_top_wc(struct ustack *stk) {
-    assert(stk);
-
-    if (stk->top != -1)
-        stk->top--;
-}
-
 void print_ustack(FILE *fout, const struct ustack *stk, const char *name) {
-    assert(stk);
-    assert(fout);
+    if ((!stk) || (!fout))
+        return;
 
     fprintf(fout, "ustack <%s>:\n", name);
     fprintf(fout, "size_elem = %lu, top = %lu, capacity = %lu\n{", stk->size_elem, stk->top, stk->capacity);
@@ -171,22 +149,26 @@ void print_ustack(FILE *fout, const struct ustack *stk, const char *name) {
 }
 
 void delete_ustack(struct ustack * *stk) {
-    assert(stk);
-    assert(*stk);
+    if ((!stk) || (!(*stk)))
+        return;
 
     free((*stk)->data);
     free(*stk);
 }
 
 size_t set_min_capacity_to_decrease(const size_t new_val) {
-    assert(new_val > 0);
+    if (new_val == 0)
+        return 0;
+
     size_t prev = MIN_CAPACITY_TO_DECREASE;
     MIN_CAPACITY_TO_DECREASE = new_val;
     return prev;
 }
 
 size_t set_min_ustack_capacity(const size_t new_val) {
-    assert(new_val > 0);
+    if (new_val == 0)
+        return 0;
+        
     size_t prev = MIN_USTACK_CAPACITY;
     MIN_USTACK_CAPACITY = new_val;
     return prev;
