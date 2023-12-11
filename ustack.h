@@ -1,14 +1,7 @@
 #ifndef USTACK_H_INCLUDED
 #define USTACK_H_INCLUDED
 
-struct ustack {
-    void *data;
-    size_t size_elem;
-    size_t top;
-    size_t capacity;
-};
-
-//wc = without checks and reallocations
+struct ustack;
 
 struct ustack * new_ustack(size_t capacity, const size_t size_elem);
 size_t ucapacity(const struct ustack *stk);

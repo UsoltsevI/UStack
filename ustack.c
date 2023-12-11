@@ -3,6 +3,13 @@
 #include <string.h>
 #include "ustack.h"
 
+struct ustack {
+    void *data;
+    size_t size_elem;
+    size_t top;
+    size_t capacity;
+};
+
 static size_t MIN_CAPACITY_TO_DECREASE = 256;
 static size_t MIN_USTACK_CAPACITY = 32;
 static size_t NUM_ELEM_TO_OUTPUT = 8;
